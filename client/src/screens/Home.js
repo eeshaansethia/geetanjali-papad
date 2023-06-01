@@ -20,7 +20,6 @@ const Home = ({ navigation }) => {
                         <Text style={styles.btnText}>Bataari Hisaab</Text>
                     </TouchableOpacity>
                 </View>
-
             </View>
             <Text style={styles.footer}>Made with ❤ by Eeshaan Sethia</Text>
         </SafeAreaView>

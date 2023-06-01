@@ -19,4 +19,4 @@ const papadDetails = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('papadDetails', papadDetails, papadDetails);
+module.exports = mongoose.model('papadDetails', papadDetails, 'papadDetails');
