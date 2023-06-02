@@ -74,7 +74,7 @@ const PapadList = ({ navigation }) => {
         <SafeAreaView style={commonStyles.mainContainerTop}>
             <TopBar title="Papad Pricing" to="Home" />
             <View style={styles.addBtnContainer}>
-                <TouchableOpacity style={styles.addBtn}>
+                <TouchableOpacity style={styles.addBtn} onPress={() => navigation.navigate('AddPapad')}>
                     <Text style={styles.addBtnText}>Add</Text>
                 </TouchableOpacity>
             </View>
@@ -83,7 +83,7 @@ const PapadList = ({ navigation }) => {
                 {
                     papadNameList.map((item, index) => (
                         <TouchableOpacity style={styles.listItem} key={item.id} onPress={() => navigation.navigate('EditPapad', { name: item.name, id: item.id })}>
-                            <Text style={styles.listItemTitle}>{item.name}</Text>
+                            <Text style={styles.listItemTitle}>{index + 1 + '. ' + item.name}</Text>
                             {
                                 item.description ? <Text style={styles.listItemSubtitle}>{item.description}</Text> : null
                             }
@@ -127,14 +127,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 10,
         marginVertical: 5,
-        shadowColor: "#000000",
-        shadowOpacity: 1,
-        shadowRadius: 2,
-        shadowOffset: {
-            height: 1,
-            width: 1
-        },
-        elevation: 5,
+        marginTop: 0,
+        borderColor: '#ccc',
+        borderWidth: 1.5,
     },
     listItemTitle: {
         fontSize: 20,
@@ -147,6 +142,6 @@ const styles = StyleSheet.create({
     divider: {
         width: '100%',
         height: 1,
-        backgroundColor: '#eee',
+        backgroundColor: '#ccc',
     },
 })
