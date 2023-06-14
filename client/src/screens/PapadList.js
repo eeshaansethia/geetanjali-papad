@@ -118,8 +118,9 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         width: '100%',
-        paddingHorizontal: 10,
+        padding: 10,
         backgroundColor: '#fff',
+        paddingBottom: 20,
     },
     listItem: {
         width: '100%',

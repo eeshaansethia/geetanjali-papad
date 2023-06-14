@@ -16,7 +16,6 @@ router.post('/', async (req, res) => {
     if (!validator.isEmpty(name) ||
         !validator.isEmpty(desc) ||
         !validator.isEmpty(pricing) ||
-        !validator.isEmpty(ingredients) ||
         !validator.isEmpty(values)) {
 
         const papadDetail = new papadDetails({
@@ -53,7 +52,6 @@ router.put('/:id', async (req, res) => {
     if (!validator.isEmpty(name) ||
         !validator.isEmpty(desc) ||
         !validator.isEmpty(pricing) ||
-        !validator.isEmpty(ingredients) ||
         !validator.isEmpty(values)) {
 
         const data = await papadDetails
