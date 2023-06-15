@@ -14,7 +14,6 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     const { name, desc, pricing, ingredients, values } = req.body
     if (!validator.isEmpty(name) ||
-        !validator.isEmpty(desc) ||
         !validator.isEmpty(pricing) ||
         !validator.isEmpty(values)) {
 
@@ -50,7 +49,6 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     const { name, desc, pricing, ingredients, values } = req.body
     if (!validator.isEmpty(name) ||
-        !validator.isEmpty(desc) ||
         !validator.isEmpty(pricing) ||
         !validator.isEmpty(values)) {
 
