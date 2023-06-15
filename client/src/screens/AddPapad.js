@@ -1,33 +1,326 @@
-import { StyleSheet, Text, View, SafeAreaView, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import TopBar from '../components/topBar'
 import commonStyles from '../common/commonCss'
-import IngredientRow from '../components/IngredientRow'
+import { ScrollView } from 'react-native'
 
-const AddPapad = () => {
+const AddPapad = ({ navigation }) => {
     const [papadName, setPapadName] = useState('')
     const [papadDesc, setPapadDesc] = useState('')
+    const [showAddIngredient, setShowAddIngredient] = useState(false)
+    const [value, setValue] = useState(0.0)
+    const [ingredient, setIngredient] = useState({
+        name: '',
+        weight: 0.0,
+        pricePerKg: 0.0,
+        totalCost: 0.0,
+    })
+    const [ingredients, setIngredients] = useState([
+        {
+            name: 'Urad Dal',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Moong Dal',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Salt',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Urad Dal',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Moong Dal',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Salt',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Urad Dal',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Moong Dal',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Salt',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Urad Dal',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Moong Dal',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Salt',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+    ])
+    const [totalWeight, setTotalWeight] = useState(0);
+    const [totalCost, setTotalCost] = useState(0);
+
+    const calculateTotals = () => {
+        let weightSum = 0;
+        let costSum = 0;
+
+        for (let i = 0; i < ingredients.length; i++) {
+            const ingredient = ingredients[i];
+            weightSum += ingredient.weight;
+            costSum += ingredient.totalCost;
+        }
+
+        setTotalWeight(weightSum);
+        setTotalCost(costSum);
+    };
+
+    const onAddIngredient = (newIngredient) => {
+        if (newIngredient.name === '' || newIngredient.weight === 0.0 || newIngredient.pricePerKg === 0.0) {
+            Alert.alert(
+                'Error',
+                'Please fill all the fields',
+                [
+                    { text: 'OK', style: 'cancel' },
+                ]
+            );
+            return
+        }
+        setIngredients([...ingredients, newIngredient])
+    }
+
+    const handlePop = (input) => {
+        if (input === 'back') {
+            Alert.alert(
+                'Confirmation',
+                'Are you sure you want to perform this action?',
+                [
+                    { text: 'Cancel', style: 'cancel' },
+                    { text: 'Confirm', onPress: handleCancel },
+                ]
+            );
+        }
+        if (input === 'save') {
+            Alert.alert(
+                'Confirmation',
+                'Are you sure you want to perform this action?',
+                [
+                    { text: 'Cancel', style: 'cancel' },
+                    { text: 'Confirm', onPress: handleSave },
+                ]
+            );
+        }
+    };
+
+    const handleSave = () => {
+        if (papadName === '') {
+            Alert.alert(
+                'Error',
+                'Please fill all the fields',
+                [
+                    { text: 'OK', style: 'cancel' },
+                ]
+            );
+            return
+        }
+        navigation.navigate('PapadList')
+    }
+
+    const handleCancel = () => {
+        navigation.navigate('PapadList')
+    }
+
+    useEffect(() => {
+        calculateTotals();
+    }, [ingredients])
+
+    const deleteButton = () => {
+        setIngredient({
+            name: '',
+            weight: 0.0,
+            pricePerKg: 0.0,
+            totalCost: 0.0,
+        })
+    }
+
+    useEffect(() => {
+        setIngredient({
+            ...ingredient,
+            totalCost: ingredient.weight * ingredient.pricePerKg,
+        })
+    }, [ingredient.weight, ingredient.pricePerKg])
+
+    const handleNameChange = (value) => {
+        setIngredient({
+            ...ingredient,
+            name: value,
+        })
+    }
+
+    const handleWeightChange = (value) => {
+        setIngredient({
+            ...ingredient,
+            weight: value,
+        })
+    }
+
+    const handlePriceChange = (value) => {
+        setIngredient({
+            ...ingredient,
+            pricePerKg: value,
+        })
+    }
 
     return (
         <SafeAreaView style={commonStyles.mainContainerTop}>
             <TopBar title="Add Papad" to="PapadList" />
             <View style={styles.container}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Papad Name"
-                    onChangeText={(text) => {
-                        setPapadName(text);
-                    }}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Papad Description"
-                    onChangeText={(text) => {
-                        setPapadDesc(text);
-                    }}
-                />
-                <Text style={styles.heading}>Ingredients</Text>
-                <IngredientRow />
+                <View style={styles.inputs}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Papad Name"
+                        onChangeText={(text) => {
+                            setPapadName(text);
+                        }}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Papad Description"
+                        onChangeText={(text) => {
+                            setPapadDesc(text);
+                        }}
+                    />
+                </View>
+                <View style={styles.buttonCont}>
+                    <Text style={styles.heading}>Ingredients</Text>
+                    <View style={styles.btn}>
+                        <TouchableOpacity onPress={() => setShowAddIngredient(!showAddIngredient)}>
+                            <Text style={commonStyles.btnText}>{showAddIngredient ? 'Hide' : 'Add +'}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                {
+                    ingredients.length > 0 ?
+                        <>
+                            <View style={styles.ingredient}>
+                                <Text style={styles.ingredientHead}>S.No.</Text>
+                                <Text style={styles.ingredientHead}>Name</Text>
+                                <Text style={styles.ingredientHead}>Weight</Text>
+                                <Text style={styles.ingredientHead}>Price/kg</Text>
+                                <Text style={styles.ingredientHead}>Cost</Text>
+                            </View>
+                            <ScrollView style={styles.ingredientList} >
+                                {ingredients.map((ingredient, index) => (
+                                    <View key={index} style={styles.ingredient}>
+                                        <Text style={styles.ingredientText}>{index + 1}</Text>
+                                        <Text style={styles.ingredientText}>{ingredient.name}</Text>
+                                        <Text style={styles.ingredientText}>{ingredient.weight}</Text>
+                                        <Text style={styles.ingredientText}>{ingredient.pricePerKg}</Text>
+                                        <Text style={styles.ingredientText}>{ingredient.totalCost}</Text>
+                                    </View>
+                                ))}
+                            </ScrollView>
+                            <View style={styles.ingredientTotals}>
+                                <Text style={styles.ingredientHead}>Totals</Text>
+                                <Text style={styles.ingredientHead}></Text>
+                                <Text style={styles.ingredientHead}>{totalWeight ? totalWeight + ' kg' : 0}</Text>
+                                <Text style={styles.ingredientHead}></Text>
+                                <Text style={styles.ingredientHead}>{totalCost ? totalCost + ' Rs' : 0} </Text>
+                            </View>
+                        </> : <Text>No Ingredients Added</Text>
+                }
+            </View>
+            <View style={styles.bottom}>
+                <View style={styles.finalCost}>
+                    <TextInput
+                        style={styles.small_input}
+                        placeholder="Value"
+                        onChangeText={(text) => {
+                            setValue(text);
+                        }}
+                    />
+                    <Text style={styles.costing}>Final Costing: {value ? totalCost / value : 0} Rs/kg</Text>
+                </View>
+                {
+                    showAddIngredient ? <View style={stylesAdd.row}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <TextInput
+                                style={stylesAdd.input_name}
+                                placeholder="Ingredient"
+                                value={ingredient.name}
+                                onChangeText={(value) => handleNameChange(value)}
+                            />
+                            <TextInput
+                                style={stylesAdd.inputAdd}
+                                placeholder="Weight"
+                                value={ingredient.weight ? ingredient.weight : ''}
+                                onChangeText={(value) => handleWeightChange(parseFloat(value))}
+                                keyboardType="numeric"
+                            />
+                            <TextInput
+                                style={stylesAdd.inputAdd}
+                                placeholder="Price/kg"
+                                value={ingredient.pricePerKg ? ingredient.pricePerKg : ''}
+                                onChangeText={(value) => handlePriceChange(parseFloat(value))}
+                                keyboardType="numeric"
+                            />
+                        </View>
+                        <View style={stylesAdd.bottom}>
+                            <View style={stylesAdd.costRow}>
+                                <Text style={stylesAdd.costText}>Cost:</Text>
+                                <Text style={stylesAdd.costValue}> {ingredient.totalCost}</Text>
+                            </View>
+                            <View style={stylesAdd.btnAdds}>
+                                <TouchableOpacity style={stylesAdd.btnAdd} onPress={() => { onAddIngredient(ingredient) }}>
+                                    <Text style={commonStyles.btnText}>Add</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={stylesAdd.btnAddDel} onPress={deleteButton}>
+                                    <Text style={commonStyles.btnText}>Delete</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View> : null
+                }
+
+                <View style={styles.buttonCont}>
+                    <TouchableOpacity style={styles.btnLast} onPress={handleSave}>
+                        <Text style={commonStyles.btnText}>Save</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.btnLast} onPress={handlePop}>
+                        <Text style={commonStyles.btnText}>Cancel</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </SafeAreaView>
     )
@@ -39,7 +332,6 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: 22,
         fontWeight: 'bold',
-        marginBottom: 10,
         textDecorationLine: 'underline',
     },
     container: {
@@ -49,13 +341,163 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 20,
     },
-
+    inputs: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        marginBottom: 10,
+        gap: 10,
+    },
     input: {
+        flex: 1,
         borderWidth: 1,
         borderColor: 'gray',
         borderRadius: 5,
         padding: 10,
-        marginBottom: 20,
+    },
+    buttonCont: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        width: '100%',
+        marginBottom: 10,
+    },
+    btn: {
+        backgroundColor: '#1587e7',
+        justifyContent: 'center',
+        borderRadius: 50,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+    },
+    ingredientList: {
         width: '100%',
     },
+    ingredient: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        width: '100%',
+        marginBottom: 8,
+    },
+    ingredientTotals: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        width: '100%',
+    },
+    ingredientHead: {
+        flex: 1,
+        fontSize: 14,
+        textAlign: 'center',
+        fontWeight: 'bold',
+    },
+    ingredientText: {
+        fontSize: 14,
+        width: '25%',
+        textAlign: 'center',
+    },
+    bottom: {
+        width: '100%',
+        paddingHorizontal: 10,
+    },
+    small_input: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 5,
+        padding: 5,
+        paddingHorizontal: 10,
+    },
+    finalCost: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        marginBottom: 20,
+    },
+    costing: {
+        flex: 2,
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    btnLast: {
+        backgroundColor: '#1587e7',
+        justifyContent: 'center',
+        borderRadius: 50,
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+    },
+
 })
+
+const stylesAdd = StyleSheet.create({
+    row: {
+        flexDirection: 'column',
+        marginBottom: 10,
+        width: '100%',
+        backgroundColor: '#eee',
+        padding: 10,
+        borderRadius: 5,
+        gap: 10,
+    },
+    input_name: {
+        flex: 2,
+        marginRight: 5,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        backgroundColor: '#fff',
+    },
+    inputAdd: {
+        flex: 1,
+        paddingHorizontal: 10,
+        marginLeft: 5,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        fontSize: 12,
+        backgroundColor: '#fff',
+    },
+    costRow: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+    costText: {
+        fontSize: 14,
+    },
+    costValue: {
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+    bottom: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 5,
+    },
+    btnAdds: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        gap: 10,
+    },
+    btnAddDel: {
+        backgroundColor: '#e54022',
+        justifyContent: 'center',
+        borderRadius: 50,
+        paddingHorizontal: 10,
+        paddingVertical: 5
+    },
+    btnAdd: {
+        backgroundColor: '#218838',
+        justifyContent: 'center',
+        borderRadius: 50,
+        paddingHorizontal: 10,
+        paddingVertical: 5
+    },
+});
