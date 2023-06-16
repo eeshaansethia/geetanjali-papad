@@ -90,6 +90,42 @@ const AddPapad = ({ navigation }) => {
             pricePerKg: 100.0,
             totalCost: 100.0,
         },
+        {
+            name: 'Urad Dal',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Moong Dal',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Salt',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Urad Dal',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Moong Dal',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
+        {
+            name: 'Salt',
+            weight: 1.0,
+            pricePerKg: 100.0,
+            totalCost: 100.0,
+        },
     ])
     const [totalWeight, setTotalWeight] = useState(0);
     const [totalCost, setTotalCost] = useState(0);
@@ -286,7 +322,7 @@ const AddPapad = ({ navigation }) => {
                 </View>
                 {
                     ingredients.length > 0 ?
-                        <>
+                        <View style={styles.outerScroll}>
                             <View style={styles.ingredient}>
                                 <Text style={styles.ingredientHead}>S.No.</Text>
                                 <Text style={styles.ingredientHead}>Name</Text>
@@ -320,7 +356,7 @@ const AddPapad = ({ navigation }) => {
                                 <Text style={styles.ingredientBottom}>{totalWeight ? totalWeight + ' kg' : 0}</Text>
                                 <Text style={styles.ingredientBottom}>{totalCost ? totalCost + ' Rs' : 0} </Text>
                             </View>
-                        </> : <Text>No Ingredients Added</Text>
+                        </View> : <Text>No Ingredients Added</Text>
                 }
             </View>
             <View style={styles.bottom}>
@@ -538,7 +574,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         paddingVertical: 10,
     },
-
+    outerScroll: {
+        flex: 1,
+        width: '100%',
+    },
 })
 
 const stylesAdd = StyleSheet.create({
