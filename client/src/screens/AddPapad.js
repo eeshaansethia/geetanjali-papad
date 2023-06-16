@@ -8,7 +8,9 @@ const AddPapad = ({ navigation }) => {
     const [papadName, setPapadName] = useState('')
     const [papadDesc, setPapadDesc] = useState('')
     const [showAddIngredient, setShowAddIngredient] = useState(false)
+    const [showEditIngredient, setShowEditIngredient] = useState(false)
     const [value, setValue] = useState(0.0)
+    const [index, setIndex] = useState(-1)
     const [ingredient, setIngredient] = useState({
         name: '',
         weight: 0.0,
@@ -102,8 +104,8 @@ const AddPapad = ({ navigation }) => {
             costSum += ingredient.totalCost;
         }
 
-        setTotalWeight(weightSum);
-        setTotalCost(costSum);
+        setTotalWeight(weightSum.toFixed(4));
+        setTotalCost(costSum.toFixed(4));
     };
 
     const onAddIngredient = (newIngredient) => {
@@ -177,7 +179,7 @@ const AddPapad = ({ navigation }) => {
     useEffect(() => {
         setIngredient({
             ...ingredient,
-            totalCost: ingredient.weight * ingredient.pricePerKg,
+            totalCost: Number(((ingredient.weight) * (ingredient.pricePerKg)).toFixed(4)),
         })
     }, [ingredient.weight, ingredient.pricePerKg])
 
@@ -191,15 +193,59 @@ const AddPapad = ({ navigation }) => {
     const handleWeightChange = (value) => {
         setIngredient({
             ...ingredient,
-            weight: value,
+            weight: Number(value),
         })
     }
 
     const handlePriceChange = (value) => {
         setIngredient({
             ...ingredient,
-            pricePerKg: value,
+            pricePerKg: Number(value),
         })
+    }
+
+    const editIngredient = (index) => {
+        setShowAddIngredient(false)
+        setShowEditIngredient(true)
+        setIndex(index)
+        setIngredient(ingredients[index])
+    }
+
+    const editCancelButton = () => {
+        setShowAddIngredient(false)
+        setShowEditIngredient(false)
+        setIngredient({
+            name: '',
+            weight: 0.0,
+            pricePerKg: 0.0,
+            totalCost: 0.0,
+        })
+        setIndex(-1)
+    }
+
+    const onEditIngredient = (newIngredient) => {
+        if (newIngredient.name === '' || newIngredient.weight === 0.0 || newIngredient.pricePerKg === 0.0) {
+            Alert.alert(
+                'Error',
+                'Please fill all the fields',
+                [
+                    { text: 'OK', style: 'cancel' },
+                ]
+            );
+            return
+        }
+        let temp = [...ingredients]
+        temp[index] = newIngredient
+        setIngredients(temp)
+        setShowAddIngredient(false)
+        setShowEditIngredient(false)
+        setIngredient({
+            name: '',
+            weight: 0.0,
+            pricePerKg: 0.0,
+            totalCost: 0.0,
+        })
+        setIndex(-1)
     }
 
     return (
@@ -225,7 +271,15 @@ const AddPapad = ({ navigation }) => {
                 <View style={styles.buttonCont}>
                     <Text style={styles.heading}>Ingredients</Text>
                     <View style={styles.btn}>
-                        <TouchableOpacity onPress={() => setShowAddIngredient(!showAddIngredient)}>
+                        <TouchableOpacity onPress={() => {
+                            setShowAddIngredient(!showAddIngredient)
+                            setIngredient({
+                                name: '',
+                                weight: 0.0,
+                                pricePerKg: 0.0,
+                                totalCost: 0.0,
+                            })
+                        }}>
                             <Text style={commonStyles.btnText}>{showAddIngredient ? 'Hide' : 'Add +'}</Text>
                         </TouchableOpacity>
                     </View>
@@ -242,21 +296,29 @@ const AddPapad = ({ navigation }) => {
                             </View>
                             <ScrollView style={styles.ingredientList} >
                                 {ingredients.map((ingredient, index) => (
-                                    <View key={index} style={styles.ingredient}>
+                                    <TouchableOpacity key={index} style={styles.ingredient} onLongPress={() => {
+                                        Alert.alert(
+                                            'Confirmation',
+                                            'What do you want to do with this ingredient?',
+                                            [
+                                                { text: 'Cancel', style: 'cancel' },
+                                                { text: 'Edit', onPress: () => { editIngredient(index) } },
+                                                { text: 'Delete', onPress: () => { setIngredients(ingredients.filter((item, i) => i !== index)) } },
+                                            ]
+                                        );
+                                    }}>
                                         <Text style={styles.ingredientText}>{index + 1}</Text>
                                         <Text style={styles.ingredientText}>{ingredient.name}</Text>
                                         <Text style={styles.ingredientText}>{ingredient.weight}</Text>
                                         <Text style={styles.ingredientText}>{ingredient.pricePerKg}</Text>
                                         <Text style={styles.ingredientText}>{ingredient.totalCost}</Text>
-                                    </View>
+                                    </TouchableOpacity>
                                 ))}
                             </ScrollView>
                             <View style={styles.ingredientTotals}>
-                                <Text style={styles.ingredientHead}>Totals</Text>
-                                <Text style={styles.ingredientHead}></Text>
-                                <Text style={styles.ingredientHead}>{totalWeight ? totalWeight + ' kg' : 0}</Text>
-                                <Text style={styles.ingredientHead}></Text>
-                                <Text style={styles.ingredientHead}>{totalCost ? totalCost + ' Rs' : 0} </Text>
+                                <Text style={styles.ingredientBottom}>Totals</Text>
+                                <Text style={styles.ingredientBottom}>{totalWeight ? totalWeight + ' kg' : 0}</Text>
+                                <Text style={styles.ingredientBottom}>{totalCost ? totalCost + ' Rs' : 0} </Text>
                             </View>
                         </> : <Text>No Ingredients Added</Text>
                 }
@@ -268,9 +330,11 @@ const AddPapad = ({ navigation }) => {
                         placeholder="Value"
                         onChangeText={(text) => {
                             setValue(text);
+                            setShowAddIngredient(false);
+                            setShowEditIngredient(false);
                         }}
                     />
-                    <Text style={styles.costing}>Final Costing: {value ? totalCost / value : 0} Rs/kg</Text>
+                    <Text style={styles.costing}>Final Costing: {value ? (totalCost / value).toFixed(4) : 0} Rs/kg</Text>
                 </View>
                 {
                     showAddIngredient ? <View style={stylesAdd.row}>
@@ -279,20 +343,20 @@ const AddPapad = ({ navigation }) => {
                                 style={stylesAdd.input_name}
                                 placeholder="Ingredient"
                                 value={ingredient.name}
-                                onChangeText={(value) => handleNameChange(value)}
+                                onChangeText={(text) => handleNameChange(text)}
                             />
                             <TextInput
                                 style={stylesAdd.inputAdd}
                                 placeholder="Weight"
                                 value={ingredient.weight ? ingredient.weight : ''}
-                                onChangeText={(value) => handleWeightChange(parseFloat(value))}
+                                onChangeText={(value) => handleWeightChange(value)}
                                 keyboardType="numeric"
                             />
                             <TextInput
                                 style={stylesAdd.inputAdd}
                                 placeholder="Price/kg"
                                 value={ingredient.pricePerKg ? ingredient.pricePerKg : ''}
-                                onChangeText={(value) => handlePriceChange(parseFloat(value))}
+                                onChangeText={(value) => handlePriceChange(value)}
                                 keyboardType="numeric"
                             />
                         </View>
@@ -313,12 +377,51 @@ const AddPapad = ({ navigation }) => {
                     </View> : null
                 }
 
+                {
+                    showEditIngredient ?
+                        <View style={stylesAdd.row}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <TextInput
+                                    style={stylesAdd.input_name}
+                                    placeholder="Ingredient"
+                                    value={ingredient.name}
+                                    onChangeText={(text) => handleNameChange(text)}
+                                />
+                                <TextInput
+                                    style={stylesAdd.inputAdd}
+                                    placeholder="Weight"
+                                    value={ingredient.weight ? ingredient.weight : 0}
+                                    onChangeText={(value) => handleWeightChange(value)}
+                                    keyboardType="numeric"
+                                />
+                                <TextInput
+                                    style={stylesAdd.inputAdd}
+                                    placeholder="Price/kg"
+                                    value={ingredient.pricePerKg ? ingredient.pricePerKg : 0}
+                                    onChangeText={(value) => handlePriceChange(value)}
+                                    keyboardType="numeric"
+                                />
+                            </View>
+                            <View style={stylesAdd.bottom}>
+                                <View style={stylesAdd.costRow}>
+                                    <Text style={stylesAdd.costText}>Cost:</Text>
+                                    <Text style={stylesAdd.costValue}> {ingredient.totalCost}</Text>
+                                </View>
+                                <View style={stylesAdd.btnAdds}>
+                                    <TouchableOpacity style={stylesAdd.btnAdd} onPress={() => { onEditIngredient(ingredient) }}>
+                                        <Text style={commonStyles.btnText}>Edit</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={stylesAdd.btnAddDel} onPress={editCancelButton}>
+                                        <Text style={commonStyles.btnText}>Cancel</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View> : null
+                }
+
                 <View style={styles.buttonCont}>
                     <TouchableOpacity style={styles.btnLast} onPress={handleSave}>
                         <Text style={commonStyles.btnText}>Save</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.btnLast} onPress={handlePop}>
-                        <Text style={commonStyles.btnText}>Cancel</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -387,6 +490,12 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     ingredientHead: {
+        flex: 1,
+        fontSize: 14,
+        textAlign: 'center',
+        fontWeight: 'bold',
+    },
+    ingredientBottom: {
         flex: 1,
         fontSize: 14,
         textAlign: 'center',
