@@ -12,7 +12,7 @@ const papadDetails = new mongoose.Schema({
         type: Number,
     },
     ingredients: {
-        type: Object
+        type: Array
     },
     values: {
         type: Number
