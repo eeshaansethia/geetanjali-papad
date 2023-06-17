@@ -8,13 +8,10 @@ const papadDetails = new mongoose.Schema({
     desc: {
         type: String
     },
-    pricing: {
-        type: Number,
-    },
     ingredients: {
         type: Array
     },
-    values: {
+    value: {
         type: Number
     },
 });
