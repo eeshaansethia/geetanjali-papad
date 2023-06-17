@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import TopBar from '../components/topBar'
 import commonStyles from '../common/commonCss'
 import { ScrollView } from 'react-native'
+import Axios from 'axios'
 
 const AddPapad = ({ navigation }) => {
     const [papadName, setPapadName] = useState('')
@@ -17,116 +18,7 @@ const AddPapad = ({ navigation }) => {
         pricePerKg: 0.0,
         totalCost: 0.0,
     })
-    const [ingredients, setIngredients] = useState([
-        {
-            name: 'Urad Dal',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Moong Dal',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Salt',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Urad Dal',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Moong Dal',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Salt',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Urad Dal',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Moong Dal',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Salt',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Urad Dal',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Moong Dal',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Salt',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Urad Dal',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Moong Dal',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Salt',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Urad Dal',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Moong Dal',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-        {
-            name: 'Salt',
-            weight: 1.0,
-            pricePerKg: 100.0,
-            totalCost: 100.0,
-        },
-    ])
+    const [ingredients, setIngredients] = useState([])
     const [totalWeight, setTotalWeight] = useState(0);
     const [totalCost, setTotalCost] = useState(0);
 
@@ -155,43 +47,47 @@ const AddPapad = ({ navigation }) => {
             );
             return
         }
-        setIngredients([...ingredients, newIngredient])
-    }
-
-    const handlePop = (input) => {
-        if (input === 'back') {
-            Alert.alert(
-                'Confirmation',
-                'Are you sure you want to perform this action?',
-                [
-                    { text: 'Cancel', style: 'cancel' },
-                    { text: 'Confirm', onPress: handleCancel },
-                ]
-            );
-        }
-        if (input === 'save') {
-            Alert.alert(
-                'Confirmation',
-                'Are you sure you want to perform this action?',
-                [
-                    { text: 'Cancel', style: 'cancel' },
-                    { text: 'Confirm', onPress: handleSave },
-                ]
-            );
-        }
-    };
-
-    const handleSave = () => {
-        if (papadName === '') {
+        if (isNaN(newIngredient.weight) || isNaN(newIngredient.pricePerKg)) {
             Alert.alert(
                 'Error',
-                'Please fill all the fields',
+                'Please enter valid values',
                 [
                     { text: 'OK', style: 'cancel' },
                 ]
             );
             return
         }
+        setIngredients([...ingredients, newIngredient])
+        setIngredient({
+            name: '',
+            weight: 0.0,
+            pricePerKg: 0.0,
+            totalCost: 0.0,
+        })
+    }
+
+    const handlePop = () => {
+        if (papadName === '') {
+            Alert.alert(
+                'Error',
+                'Please add a name for the papad.',
+                [
+                    { text: 'OK', style: 'cancel' },
+                ]
+            );
+            return
+        }
+        Alert.alert(
+            'Confirmation',
+            'Are you sure you want to perform this action?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Confirm', onPress: handleSave },
+            ]
+        );
+    };
+
+    const handleSave = () => {
         navigation.navigate('PapadList')
     }
 
@@ -370,7 +266,7 @@ const AddPapad = ({ navigation }) => {
                             setShowEditIngredient(false);
                         }}
                     />
-                    <Text style={styles.costing}>Final Costing: {value ? (totalCost / value).toFixed(4) : 0} Rs/kg</Text>
+                    <Text style={styles.costing}>Final Costing: {value ? (totalCost / value).toFixed(2) : 0} Rs/kg</Text>
                 </View>
                 {
                     showAddIngredient ? <View style={stylesAdd.row}>
@@ -384,15 +280,15 @@ const AddPapad = ({ navigation }) => {
                             <TextInput
                                 style={stylesAdd.inputAdd}
                                 placeholder="Weight"
-                                value={ingredient.weight ? ingredient.weight : ''}
-                                onChangeText={(value) => handleWeightChange(value)}
+                                value={ingredient.weight}
+                                onChangeText={(value) => handleWeightChange(Number(value))}
                                 keyboardType="numeric"
                             />
                             <TextInput
                                 style={stylesAdd.inputAdd}
                                 placeholder="Price/kg"
-                                value={ingredient.pricePerKg ? ingredient.pricePerKg : ''}
-                                onChangeText={(value) => handlePriceChange(value)}
+                                value={ingredient.pricePerKg}
+                                onChangeText={(value) => handlePriceChange(Number(value))}
                                 keyboardType="numeric"
                             />
                         </View>
@@ -456,7 +352,7 @@ const AddPapad = ({ navigation }) => {
                 }
 
                 <View style={styles.buttonCont}>
-                    <TouchableOpacity style={styles.btnLast} onPress={handleSave}>
+                    <TouchableOpacity style={styles.btnLast} onPress={handlePop}>
                         <Text style={commonStyles.btnText}>Save</Text>
                     </TouchableOpacity>
                 </View>
