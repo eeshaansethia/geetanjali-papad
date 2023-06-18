@@ -1,75 +1,48 @@
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ScrollView, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import TopBar from '../components/topBar'
 import commonStyles from '../common/commonCss'
+import axios from 'axios'
+import { useIsFocused } from '@react-navigation/native'
 
 const PapadList = ({ navigation }) => {
-    const papadNameList = [
-        {
-            id: 1,
-            name: 'Masala Papad',
-            description: '',
-        },
-        {
-            id: 2,
-            name: 'Saada Papad',
-        },
-        {
-            id: 3,
-            name: 'Chana Papad',
-            description: 'Description',
-        },
-        {
-            id: 4,
-            name: 'Masala Papad',
-            description: 'Description',
-        },
-        {
-            id: 5,
-            name: 'Saada Papad',
-            description: 'Description',
-        },
-        {
-            id: 6,
-            name: 'Chana Papad',
-            description: 'Description',
-        },
-        {
-            id: 7,
-            name: 'Masala Papad',
-            description: 'Description',
-        },
-        {
-            id: 8,
-            name: 'Saada Papad',
-            description: 'Description',
-        },
-        {
-            id: 9,
-            name: 'Chana Papad',
-            description: 'Description',
-        },
-        {
-            id: 10,
-            name: 'Masala Papad',
-            description: 'Description',
-        },
-        {
-            id: 11,
-            name: 'Saada Papad',
-            description: 'Description',
-        },
-        {
-            id: 12,
-            name: 'Chana Papad',
-            description: 'Description',
-        },
-        {
-            id: 13,
-            name: 'Special Papad',
-            description: 'Description',
-        },
-    ]
+    const [papadNameList, setPapadNameList] = useState([])
+
+    const isFocused = useIsFocused()
+
+    useEffect(() => {
+        const getDetails = async () => {
+            await axios.get('http://192.168.29.14:3001/papadDetails')
+                .then(({ data }) => {
+                    if (data.status === 200) {
+                        setPapadNameList(data.data)
+                    }
+                    else {
+                        Alert.alert(
+                            'Error',
+                            'Something went wrong. Contact your son.',
+                            [
+                                { text: 'OK', style: 'cancel' },
+                            ]
+                        );
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                    Alert.alert(
+                        'Error',
+                        'Something went wrong. Contact your son.',
+                        [
+                            { text: 'OK', style: 'cancel' },
+                        ]
+                    );
+                })
+        }
+        if (isFocused) {
+            getDetails()
+        }
+    }, [isFocused])
+
     return (
         <SafeAreaView style={commonStyles.mainContainerTop}>
             <TopBar title="Papad Pricing" to="Home" />
@@ -79,13 +52,16 @@ const PapadList = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
             <View style={styles.divider} />
+            {
+                papadNameList.length === 0 ? <Text style={{ ...styles.listItemTitle, textAlign: 'center', marginTop: 20, width: '100%' }}>No Papad Added</Text> : null
+            }
             <ScrollView style={styles.listContainer}>
                 {
                     papadNameList.map((item, index) => (
-                        <TouchableOpacity style={styles.listItem} key={item.id} onPress={() => navigation.navigate('EditPapad', { name: item.name, id: item.id })}>
+                        <TouchableOpacity style={styles.listItem} key={item._id} onPress={() => navigation.navigate('EditPapad', { name: item.name, id: item._id })}>
                             <Text style={styles.listItemTitle}>{index + 1 + '. ' + item.name}</Text>
                             {
-                                item.description ? <Text style={styles.listItemSubtitle}>{item.description}</Text> : null
+                                item.desc ? <Text style={styles.listItemSubtitle}>{item.desc}</Text> : null
                             }
                         </TouchableOpacity>
                     ))

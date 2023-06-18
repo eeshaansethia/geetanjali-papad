@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import TopBar from '../components/topBar'
 import commonStyles from '../common/commonCss'
 import { ScrollView } from 'react-native'
-import Axios from 'axios'
 import axios from 'axios'
 
 const AddPapad = ({ navigation }) => {
@@ -113,8 +112,13 @@ const AddPapad = ({ navigation }) => {
             .then(({ data }) => {
                 console.log(data)
                 if (data.status === 200) {
-                    navigation.navigate('PapadList')
-                    console.log('Inner Running')
+                    Alert.alert(
+                        'Success',
+                        'Papad added successfully.',
+                        [
+                            { text: 'OK', onPress: () => navigation.navigate('PapadList') },
+                        ]
+                    );
                 } else {
                     Alert.alert(
                         'Error',

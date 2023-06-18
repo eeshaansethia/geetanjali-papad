@@ -11,8 +11,15 @@ router.get('/', async (req, res) => {
     })
 })
 
+router.get('/:id', async (req, res) => {
+    const data = await papadDetails.findById(req.params.id)
+    res.json({
+        data: data,
+        status: 200
+    })
+})
+
 router.post('/', async (req, res) => {
-    console.log(req.body)
     const { name, desc, ingredients, value } = req.body
     if (!validator.isEmpty(name)) {
         const papadDetail = new papadDetails({
