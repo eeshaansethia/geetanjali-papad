@@ -6,6 +6,10 @@ require('dotenv').config()
 
 const app = express();
 const port = process.env.PORT;
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }))
+
 const papadDetails = require('./routes/papadDetails');
 
 mongoose.set('strictQuery', false)
@@ -25,6 +29,5 @@ app.get('/', (req, res) => {
     });
 });
 
-app.use(cors());
 app.use('/papadDetails', papadDetails);
 app.listen(port);

@@ -4,6 +4,7 @@ import TopBar from '../components/topBar'
 import commonStyles from '../common/commonCss'
 import { ScrollView } from 'react-native'
 import Axios from 'axios'
+import axios from 'axios'
 
 const AddPapad = ({ navigation }) => {
     const [papadName, setPapadName] = useState('')
@@ -33,7 +34,7 @@ const AddPapad = ({ navigation }) => {
         }
 
         setTotalWeight(weightSum.toFixed(4));
-        setTotalCost(costSum.toFixed(4));
+        setTotalCost(costSum.toFixed(2));
     };
 
     const onAddIngredient = (newIngredient) => {
@@ -64,6 +65,7 @@ const AddPapad = ({ navigation }) => {
             pricePerKg: 0.0,
             totalCost: 0.0,
         })
+        setShowAddIngredient(false)
     }
 
     const handlePop = () => {
@@ -77,6 +79,17 @@ const AddPapad = ({ navigation }) => {
             );
             return
         }
+        if (ingredients.length === 0) {
+            Alert.alert(
+                'Error',
+                'Please add atleast one ingredient.',
+                [
+                    { text: 'OK', style: 'cancel' },
+                ]
+            );
+            return
+        }
+
         Alert.alert(
             'Confirmation',
             'Are you sure you want to perform this action?',
@@ -87,12 +100,41 @@ const AddPapad = ({ navigation }) => {
         );
     };
 
-    const handleSave = () => {
-        navigation.navigate('PapadList')
-    }
-
-    const handleCancel = () => {
-        navigation.navigate('PapadList')
+    const handleSave = async () => {
+        setShowAddIngredient(false)
+        setShowEditIngredient(false)
+        console.log(papadName, papadDesc, ingredients, value)
+        await axios.post('http://192.168.29.14:3001/papadDetails', {
+            name: papadName,
+            desc: papadDesc,
+            ingredients: ingredients,
+            value: value,
+        })
+            .then(({ data }) => {
+                console.log(data)
+                if (data.status === 200) {
+                    navigation.navigate('PapadList')
+                    console.log('Inner Running')
+                } else {
+                    Alert.alert(
+                        'Error',
+                        'Something went wrong. Contact your son.',
+                        [
+                            { text: 'OK', style: 'cancel' },
+                        ]
+                    );
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+                Alert.alert(
+                    'Error',
+                    'Something went wrong. Contact your son.',
+                    [
+                        { text: 'OK', style: 'cancel' },
+                    ]
+                );
+            })
     }
 
     useEffect(() => {
@@ -111,7 +153,7 @@ const AddPapad = ({ navigation }) => {
     useEffect(() => {
         setIngredient({
             ...ingredient,
-            totalCost: Number(((ingredient.weight) * (ingredient.pricePerKg)).toFixed(4)),
+            totalCost: Number(((ingredient.weight) * (ingredient.pricePerKg)).toFixed(2)),
         })
     }, [ingredient.weight, ingredient.pricePerKg])
 
@@ -282,14 +324,14 @@ const AddPapad = ({ navigation }) => {
                                 placeholder="Weight"
                                 value={ingredient.weight}
                                 onChangeText={(value) => handleWeightChange(Number(value))}
-                                keyboardType="numeric"
+                                inputMode="numeric"
                             />
                             <TextInput
                                 style={stylesAdd.inputAdd}
                                 placeholder="Price/kg"
                                 value={ingredient.pricePerKg}
                                 onChangeText={(value) => handlePriceChange(Number(value))}
-                                keyboardType="numeric"
+                                inputMode="numeric"
                             />
                         </View>
                         <View style={stylesAdd.bottom}>

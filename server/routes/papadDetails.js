@@ -12,10 +12,9 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
+    console.log(req.body)
     const { name, desc, ingredients, value } = req.body
-    if (!validator.isEmpty(name) ||
-        !validator.isEmpty(value)) {
-
+    if (!validator.isEmpty(name)) {
         const papadDetail = new papadDetails({
             name: name,
             desc: desc,
