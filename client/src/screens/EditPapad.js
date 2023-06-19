@@ -143,7 +143,25 @@ const EditPapad = ({ route }) => {
     };
 
     const handleEdit = async () => {
-        console.log('edit')
+        await axios.put(`http://192.168.29.14:3001/papadDetails/${id}`, {
+            name: papadName,
+            desc: papadDesc,
+            ingredients: ingredients,
+            value: value,
+        }).then(({ data }) => {
+            if (data.status === 200) {
+                navigation.navigate('PapadList')
+            }
+        }).catch((err) => {
+            console.log(err)
+            Alert.alert(
+                'Error',
+                'Something went wrong. Contact your son.',
+                [
+                    { text: 'OK', style: 'cancel' },
+                ]
+            );
+        })
     }
 
     useEffect(() => {

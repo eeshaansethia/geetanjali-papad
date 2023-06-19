@@ -51,19 +51,15 @@ router.post('/', async (req, res) => {
 })
 
 router.put('/:id', async (req, res) => {
-    const { name, desc, pricing, ingredients, values } = req.body
-    if (!validator.isEmpty(name) ||
-        !validator.isEmpty(pricing) ||
-        !validator.isEmpty(values)) {
-
+    const { name, desc, ingredients, value } = req.body
+    if (!validator.isEmpty(name)) {
         const data = await papadDetails
             .updateOne({ _id: req.params.id }, {
                 $set: {
                     name: name,
                     desc: desc,
-                    pricing: pricing,
                     ingredients: ingredients,
-                    values: values
+                    value: value
                 }
             })
             .then(() => {

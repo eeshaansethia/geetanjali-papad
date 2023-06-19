@@ -112,13 +112,7 @@ const AddPapad = ({ navigation }) => {
             .then(({ data }) => {
                 console.log(data)
                 if (data.status === 200) {
-                    Alert.alert(
-                        'Success',
-                        'Papad added successfully.',
-                        [
-                            { text: 'OK', onPress: () => navigation.navigate('PapadList') },
-                        ]
-                    );
+                    navigation.navigate('PapadList')
                 } else {
                     Alert.alert(
                         'Error',
