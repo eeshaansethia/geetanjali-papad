@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import TopBar from '../components/topBar'
 import axios from 'axios'
 import commonStyles from '../common/commonCss'
+import { useNavigation } from '@react-navigation/native'
 
 const EditPapad = ({ route }) => {
     const { id, name } = route.params
@@ -22,6 +23,8 @@ const EditPapad = ({ route }) => {
     const [showAddIngredient, setShowAddIngredient] = useState(false)
     const [showEditIngredient, setShowEditIngredient] = useState(false)
 
+    const navigation = useNavigation()
+
     const calculateTotals = () => {
         let weightSum = 0;
         let costSum = 0;
@@ -38,18 +41,16 @@ const EditPapad = ({ route }) => {
 
     useEffect(() => {
         calculateTotals();
-        console.log(ingredients.length)
     }, [ingredients]);
 
     useEffect(() => {
         const getPapadDetails = async () => {
             await axios.get(`http://192.168.29.14:3001/papadDetails/${id}`)
                 .then(({ data }) => {
-                    console.log(data)
                     if (data.status === 200) {
                         setPapadName(data.data.name)
                         setPapadDesc(data.data.desc)
-                        setIngredient(data.data.ingredients)
+                        setIngredients(data.data.ingredients)
                         setValue(data.data.value)
                     }
                 })
@@ -126,6 +127,17 @@ const EditPapad = ({ route }) => {
             [
                 { text: 'Cancel', style: 'cancel' },
                 { text: 'Confirm', onPress: handleEdit },
+            ]
+        );
+    };
+
+    const handleCancel = () => {
+        Alert.alert(
+            'Confirmation',
+            'Are you sure you want to perform this action?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Confirm', onPress: () => navigation.navigate('PapadList') },
             ]
         );
     };
@@ -215,10 +227,9 @@ const EditPapad = ({ route }) => {
         setIndex(-1)
     }
 
-
     return (
         <SafeAreaView style={commonStyles.mainContainerTop}>
-            <TopBar title="Add Papad" to="PapadList" />
+            <TopBar title={name} to="PapadList" />
             <View style={styles.container}>
                 <View style={styles.inputs}>
                     <TextInput
@@ -254,44 +265,44 @@ const EditPapad = ({ route }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                {
-                    ingredients ?
-                        <View style={styles.outerScroll}>
-                            <View style={styles.ingredient}>
-                                <Text style={styles.ingredientHead}>S.No.</Text>
-                                <Text style={styles.ingredientHead}>Name</Text>
-                                <Text style={styles.ingredientHead}>Weight</Text>
-                                <Text style={styles.ingredientHead}>Price/kg</Text>
-                                <Text style={styles.ingredientHead}>Cost</Text>
-                            </View>
-                            <ScrollView style={styles.ingredientList} >
-                                {ingredients && ingredients.map((ingredient, index) => (
-                                    <TouchableOpacity key={index} style={styles.ingredient} onLongPress={() => {
-                                        Alert.alert(
-                                            'Confirmation',
-                                            'What do you want to do with this ingredient?',
-                                            [
-                                                { text: 'Cancel', style: 'cancel' },
-                                                { text: 'Edit', onPress: () => { editIngredient(index) } },
-                                                { text: 'Delete', onPress: () => { setIngredients(ingredients.filter((item, i) => i !== index)) } },
-                                            ]
-                                        );
-                                    }}>
-                                        <Text style={styles.ingredientText}>{index + 1}</Text>
-                                        <Text style={styles.ingredientText}>{ingredient.name}</Text>
-                                        <Text style={styles.ingredientText}>{ingredient.weight}</Text>
-                                        <Text style={styles.ingredientText}>{ingredient.pricePerKg}</Text>
-                                        <Text style={styles.ingredientText}>{ingredient.totalCost}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </ScrollView>
-                            <View style={styles.ingredientTotals}>
-                                <Text style={styles.ingredientBottom}>Totals</Text>
-                                <Text style={styles.ingredientBottom}>{totalWeight ? totalWeight + ' kg' : 0}</Text>
-                                <Text style={styles.ingredientBottom}>{totalCost ? totalCost + ' Rs' : 0} </Text>
-                            </View>
-                        </View> : <Text>No Ingredients Added</Text>
-                }
+                <View style={styles.outerScroll}>
+                    <View style={styles.ingredient}>
+                        <Text style={styles.ingredientHead}>S.No.</Text>
+                        <Text style={styles.ingredientHead}>Name</Text>
+                        <Text style={styles.ingredientHead}>Weight</Text>
+                        <Text style={styles.ingredientHead}>Price/kg</Text>
+                        <Text style={styles.ingredientHead}>Cost</Text>
+                    </View>
+                    {
+                        ingredients.length > 0 && <ScrollView style={styles.ingredientList} >
+                            {ingredients.map((ingredient, index) => (
+                                <TouchableOpacity key={index} style={styles.ingredient} onLongPress={() => {
+                                    Alert.alert(
+                                        'Confirmation',
+                                        'What do you want to do with this ingredient?',
+                                        [
+                                            { text: 'Cancel', style: 'cancel' },
+                                            { text: 'Edit', onPress: () => { editIngredient(index) } },
+                                            { text: 'Delete', onPress: () => { setIngredients(ingredients.filter((item, i) => i !== index)) } },
+                                        ]
+                                    );
+                                }}>
+                                    <Text style={styles.ingredientText}>{index + 1}</Text>
+                                    <Text style={styles.ingredientText}>{ingredient.name}</Text>
+                                    <Text style={styles.ingredientText}>{ingredient.weight}</Text>
+                                    <Text style={styles.ingredientText}>{ingredient.pricePerKg}</Text>
+                                    <Text style={styles.ingredientText}>{ingredient.totalCost}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    }
+
+                    <View style={styles.ingredientTotals}>
+                        <Text style={styles.ingredientBottom}>Totals</Text>
+                        <Text style={styles.ingredientBottom}>{totalWeight ? totalWeight + ' kg' : 0}</Text>
+                        <Text style={styles.ingredientBottom}>{totalCost ? totalCost + ' Rs' : 0} </Text>
+                    </View>
+                </View>
             </View>
             <View style={styles.bottom}>
                 <View style={styles.finalCost}>
@@ -390,6 +401,9 @@ const EditPapad = ({ route }) => {
                 }
 
                 <View style={styles.buttonCont}>
+                    <TouchableOpacity style={styles.btnLast} onPress={handleCancel}>
+                        <Text style={commonStyles.btnText}>Back</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity style={styles.btnLast} onPress={handlePop}>
                         <Text style={commonStyles.btnText}>Save</Text>
                     </TouchableOpacity>
