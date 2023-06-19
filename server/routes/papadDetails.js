@@ -76,4 +76,20 @@ router.put('/:id', async (req, res) => {
     }
 })
 
+router.delete('/:id', async (req, res) => {
+    const data = await papadDetails
+        .deleteOne({ _id: req.params.id })
+        .then(() => {
+            res.json({
+                message: 'Data deleted successfully',
+                status: 200
+            })
+        }).catch((err) => {
+            res.json({
+                message: err,
+                status: 500
+            })
+        })
+})
+
 module.exports = router

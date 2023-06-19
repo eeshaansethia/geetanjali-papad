@@ -43,6 +43,51 @@ const PapadList = ({ navigation }) => {
         }
     }, [isFocused])
 
+    const deletePapadAlert = (id) => {
+        Alert.alert(
+            'Delete Papad',
+            'Are you sure you want to delete this papad?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'OK', onPress: () => deletePapad(id) },
+            ]
+        );
+    }
+
+    const deletePapad = async (id) => {
+        await axios.delete('http://192.168.29.14:3001/papadDetails/' + id)
+            .then(({ data }) => {
+                if (data.status === 200) {
+                    Alert.alert(
+                        'Success',
+                        'Papad deleted successfully',
+                        [
+                            { text: 'OK', onPress: () => navigation.navigate('PapadList') },
+                        ]
+                    );
+                }
+                else {
+                    Alert.alert(
+                        'Error',
+                        'Something went wrong. Contact your son.',
+                        [
+                            { text: 'OK', style: 'cancel' },
+                        ]
+                    );
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                Alert.alert(
+                    'Error',
+                    'Something went wrong. Contact your son.',
+                    [
+                        { text: 'OK', style: 'cancel' },
+                    ]
+                );
+            })
+    }
+
     return (
         <SafeAreaView style={commonStyles.mainContainerTop}>
             <TopBar title="Papad Pricing" to="Home" />
@@ -58,7 +103,7 @@ const PapadList = ({ navigation }) => {
             <ScrollView style={styles.listContainer}>
                 {
                     papadNameList.map((item, index) => (
-                        <TouchableOpacity style={styles.listItem} key={item._id} onPress={() => navigation.navigate('EditPapad', { name: item.name, id: item._id })}>
+                        <TouchableOpacity style={styles.listItem} key={item._id} onPress={() => navigation.navigate('EditPapad', { name: item.name, id: item._id })} onLongPress={() => deletePapadAlert(item._id)}>
                             <Text style={styles.listItemTitle}>{index + 1 + '. ' + item.name}</Text>
                             {
                                 item.desc ? <Text style={styles.listItemSubtitle}>{item.desc}</Text> : null
