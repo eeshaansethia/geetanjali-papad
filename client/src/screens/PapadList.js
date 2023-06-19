@@ -62,7 +62,7 @@ const PapadList = ({ navigation }) => {
                         'Success',
                         'Papad deleted successfully',
                         [
-                            { text: 'OK', onPress: () => navigation.navigate('PapadList') },
+                            { text: 'OK', onPress: () => navigation.navigate('Home') },
                         ]
                     );
                 }
