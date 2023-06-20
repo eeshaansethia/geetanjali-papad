@@ -6,6 +6,7 @@ require('dotenv').config()
 
 const app = express();
 const port = process.env.PORT;
+const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@papadapp.pxcscgq.mongodb.net/papadApp?retryWrites=true&w=majority`;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
@@ -13,7 +14,7 @@ app.use(express.urlencoded({ extended: false }))
 const papadDetails = require('./routes/papadDetails');
 
 mongoose.set('strictQuery', false)
-mongoose.connect('mongodb://127.0.0.1:27017/geetanjaliPapad', {
+mongoose.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
