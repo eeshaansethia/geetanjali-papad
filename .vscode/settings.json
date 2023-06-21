@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/21103fcc-4d32-4766-a3d7-6b201ff4ec9a/resourceGroups/geetanjalipapad/providers/Microsoft.Web/sites/geetanjalipapad",
+    "appService.deploySubpath": "server"
+}
