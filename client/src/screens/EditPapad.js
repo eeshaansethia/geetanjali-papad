@@ -45,7 +45,7 @@ const EditPapad = ({ route }) => {
 
     useEffect(() => {
         const getPapadDetails = async () => {
-            await axios.get(`http://192.168.29.14:3001/papadDetails/${id}`)
+            await axios.get(`https://geetanjalipapad.azurewebsites.net/papadDetails/${id}`)
                 .then(({ data }) => {
                     if (data.status === 200) {
                         setPapadName(data.data.name)
@@ -143,7 +143,7 @@ const EditPapad = ({ route }) => {
     };
 
     const handleEdit = async () => {
-        await axios.put(`http://192.168.29.14:3001/papadDetails/${id}`, {
+        await axios.put(`https://geetanjalipapad.azurewebsites.net/papadDetails/${id}`, {
             name: papadName,
             desc: papadDesc,
             ingredients: ingredients,
@@ -419,7 +419,7 @@ const EditPapad = ({ route }) => {
                 }
 
                 <View style={styles.buttonCont}>
-                    <TouchableOpacity style={styles.btnLast} onPress={handleCancel}>
+                    <TouchableOpacity style={styles.btnLast} onPress={() => navigation.navigate('PapadList')}>
                         <Text style={commonStyles.btnText}>Back</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btnLast} onPress={handlePop}>

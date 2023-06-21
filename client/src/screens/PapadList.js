@@ -12,7 +12,7 @@ const PapadList = ({ navigation }) => {
 
     useEffect(() => {
         const getDetails = async () => {
-            await axios.get('http://192.168.29.14:3001/papadDetails')
+            await axios.get('https://geetanjalipapad.azurewebsites.net/papadDetails')
                 .then(({ data }) => {
                     if (data.status === 200) {
                         setPapadNameList(data.data)
@@ -55,7 +55,7 @@ const PapadList = ({ navigation }) => {
     }
 
     const deletePapad = async (id) => {
-        await axios.delete('http://192.168.29.14:3001/papadDetails/' + id)
+        await axios.delete('https://geetanjalipapad.azurewebsites.net/papadDetails/' + id)
             .then(({ data }) => {
                 if (data.status === 200) {
                     Alert.alert(

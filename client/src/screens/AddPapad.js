@@ -103,7 +103,7 @@ const AddPapad = ({ navigation }) => {
         setShowAddIngredient(false)
         setShowEditIngredient(false)
         console.log(papadName, papadDesc, ingredients, value)
-        await axios.post('http://192.168.29.14:3001/papadDetails', {
+        await axios.post('https://geetanjalipapad.azurewebsites.net/papadDetails', {
             name: papadName,
             desc: papadDesc,
             ingredients: ingredients,
