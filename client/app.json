@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "CalculatorApp",
-    "slug": "CalculatorApp",
+    "name": "Geetjanjali Papad",
+    "slug": "GeetjanjaliPapad",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
@@ -14,22 +14,16 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.eeshaansethia.CalculatorApp"
-    },
-    "web": {
-      "favicon": "./assets/logo.png"
+      "package": "com.eeshaansethia.GeetanjaliPapad"
     },
     "extra": {
       "eas": {
-        "projectId": "b968d244-4b34-4f52-90ac-c511c467dd86"
+        "projectId": "674f9f8e-c0df-4d76-8489-3fccd576224f"
       }
     }
   }

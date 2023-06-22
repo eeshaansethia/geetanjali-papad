@@ -1,10 +1,30 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native'
 import React from 'react'
 import TopBar from '../components/topBar'
 import commonStyles from '../common/commonCss'
 import Logo from '../../assets/logo.png'
+import Axios from 'axios'
 
 const Home = ({ navigation }) => {
+
+    const pricingRoute = async () => {
+        await Axios.get('https://geetanjalipapad.azurewebsites.net/papadDetails/check')
+            .then(({ data }) => {
+                if (data.status === 200) {
+                    navigation.navigate('Pricing')
+                }
+            }).catch((err) => {
+                Alert.alert(
+                    'Error',
+                    'Something went wrong. Check your internet connection or contact your son.',
+                    [
+                        { text: 'OK', style: 'cancel' },
+                    ]
+                )
+            })
+
+
+    }
     return (
         <SafeAreaView style={commonStyles.mainContainerTop}>
             <View style={styles.container}>
@@ -13,7 +33,7 @@ const Home = ({ navigation }) => {
                     <Text style={styles.title}>A Brand by Jai Gurudev Food Products</Text>
                 </View>
                 <View style={styles.btnContainer}>
-                    <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('PapadList')} activeOpacity={0.85}>
+                    <TouchableOpacity style={styles.btn} onPress={() => pricingRoute()} activeOpacity={0.85}>
                         <Text style={styles.btnText}>Papad Pricing</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btn} activeOpacity={0.85}>

@@ -11,6 +11,13 @@ router.get('/', async (req, res) => {
     })
 })
 
+router.get('/check', async (req, res) => {
+    res.json({
+        message: 'PapadDetails route is working',
+        status: 200
+    })
+})
+
 router.get('/:id', async (req, res) => {
     const data = await papadDetails.findById(req.params.id)
     res.json({
