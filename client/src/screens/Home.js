@@ -11,7 +11,7 @@ const Home = ({ navigation }) => {
         await Axios.get('https://geetanjalipapad.azurewebsites.net/papadDetails/check')
             .then(({ data }) => {
                 if (data.status === 200) {
-                    navigation.navigate('Pricing')
+                    navigation.navigate('PapadList')
                 }
             }).catch((err) => {
                 Alert.alert(
@@ -22,8 +22,6 @@ const Home = ({ navigation }) => {
                     ]
                 )
             })
-
-
     }
     return (
         <SafeAreaView style={commonStyles.mainContainerTop}>
@@ -33,7 +31,7 @@ const Home = ({ navigation }) => {
                     <Text style={styles.title}>A Brand by Jai Gurudev Food Products</Text>
                 </View>
                 <View style={styles.btnContainer}>
-                    <TouchableOpacity style={styles.btn} onPress={() => pricingRoute()} activeOpacity={0.85}>
+                    <TouchableOpacity style={styles.btn} onPress={pricingRoute} activeOpacity={0.85}>
                         <Text style={styles.btnText}>Papad Pricing</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btn} activeOpacity={0.85}>
